@@ -1,12 +1,11 @@
 import Students from "../models/Students.js";
-import User from "../models/User.js";
 
 // Add a new user
 export const getStudents = async (req, res) => {
   try {
     const students = await Students.find();
 
-    res.status(200).json({ message: "Students retrieved successfully", students });
+    res.status(200).json({ message: "Students retrieved successfully", data : students });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -33,3 +32,22 @@ export const addStudent = async (req, res) => {
   }
 };
 
+// Delete a student by ID
+export const deleteStudent = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if student exists
+    const student = await Students.findById(id);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Delete student
+    await Students.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Student deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
