@@ -11,7 +11,6 @@ export const getStudents = async (req, res) => {
   }
 };
 
-
 // Add a new user
 export const addStudent = async (req, res) => {
   try {
@@ -51,3 +50,4 @@ export const deleteStudent = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
