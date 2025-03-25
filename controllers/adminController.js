@@ -51,3 +51,28 @@ export const deleteStudent = async (req, res) => {
   }
 };
 
+export const deleteStudents = async (req, res) => {
+  try {
+    const ids = req.body.studentsIds; // Expecting either a single ID or an array of IDs
+
+    if (!ids || ids.length === 0) {
+      return res.status(400).json({ message: "No student ID(s) provided" });
+    }
+
+    // Check if all students exist before deletion
+    const existingStudents = await Students.find({ _id: { $in: ids } });
+    if (existingStudents.length !== ids.length) {
+      return res.status(404).json({ message: "One or more students not found" });
+    }
+
+    // Delete students
+    await Students.deleteMany({ _id: { $in: ids } });
+
+    res.status(200).json({
+      message: ids.length > 1 ? "Students deleted successfully" : "Student deleted successfully",
+      deletedCount: ids.length,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
